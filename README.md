@@ -2,7 +2,7 @@
 
 A bright, touch-friendly math practice game for kids around 7 years old.
 
-**Play it:** https://unboxpa.github.io/math-quest/
+**Play it:** https://emilypoipoi.github.io/math-quest/
 
 ## Games
 - ➕ Adding, ➖ Taking Away, 🔀 Mix It Up
