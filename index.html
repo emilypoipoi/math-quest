@@ -107,6 +107,19 @@
   .home-footer{display:flex;justify-content:center;gap:var(--gap);margin-top:auto;padding-top:6px;flex-wrap:wrap}
   .wide-btn.installed{background:#d9f7e8;color:#16804d;box-shadow:none;cursor:default}
   .wide-btn.installed:active{transform:none}
+  .sheet{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 14px);transform:translate(-50%,140%);
+    width:min(560px,calc(100% - 24px));background:#fff;border-radius:calc(var(--radius)*1.2);z-index:65;
+    box-shadow:0 12px 40px rgba(20,10,60,.35);padding:clamp(16px,3vmin,26px);
+    display:flex;gap:clamp(12px,2.4vmin,20px);align-items:center;transition:transform .45s cubic-bezier(.2,1.3,.4,1);visibility:hidden}
+  .sheet.show{transform:translate(-50%,0);visibility:visible}
+  .sheet img{width:clamp(56px,10vmin,84px);height:clamp(56px,10vmin,84px);border-radius:22%;flex:none;box-shadow:0 4px 0 rgba(0,0,0,.12)}
+  .sheet .txt{flex:1;min-width:0;padding-right:18px}
+  .sheet b{display:block;font-size:clamp(18px,3vmin,26px);font-weight:900}
+  .sheet p{margin:.15em 0 .6em;font-size:clamp(14px,2.3vmin,19px);font-weight:700;color:#6b6394}
+  .sheet .row{display:flex;gap:10px;flex-wrap:wrap}
+  .sheet .yes{background:var(--green);color:#fff;border-radius:999px;padding:.5em 1.1em;font-weight:900;font-size:clamp(16px,2.6vmin,22px);box-shadow:0 4px 0 rgba(0,0,0,.15)}
+  .sheet .no{background:#f1edff;color:#6b6394;border-radius:999px;padding:.5em 1em;font-weight:800;font-size:clamp(15px,2.4vmin,20px)}
+  .sheet .x{position:absolute;top:6px;right:8px;background:none;font-size:20px;color:#b8afe6;padding:6px;line-height:1}
   .modal{position:fixed;inset:0;background:rgba(30,20,70,.55);display:none;align-items:center;justify-content:center;z-index:70;
     padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 16px)}
   .modal.open{display:flex;animation:pop .25s ease}
@@ -317,6 +330,19 @@
 
 <div class="confetti" id="confetti"></div>
 <div class="toast" id="toast"></div>
+
+<div class="sheet" id="installSheet" role="dialog" aria-labelledby="sheetTitle">
+  <button class="x" id="sheetX" aria-label="Close">✕</button>
+  <img src="icons/icon-192.png" alt="">
+  <div class="txt">
+    <b id="sheetTitle">Play it like an app! 🦉</b>
+    <p>Add it to your home screen for full screen play. It works without internet too!</p>
+    <div class="row">
+      <button class="yes" id="sheetYes">📲 Add to Home</button>
+      <button class="no" id="sheetNo">Not now</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
   <div class="modal-card">
@@ -628,7 +654,7 @@
       b.classList.remove('installed');
     }
   }
-  function markInstalled(){ installed = true; store.set('installed', true); renderInstall(); }
+  function markInstalled(){ installed = true; store.set('installed', true); renderInstall(); const sh=$('installSheet'); sh && sh.classList.remove('show'); }
 
   function openInstallHelp(already){
     let steps, hint = '';
@@ -670,7 +696,7 @@
     $('installModal').classList.add('open');
   }
 
-  $('installBtn').addEventListener('click', async () => {
+  async function startInstall(){
     if(isStandalone()) return;            // already running as the installed app
     sfx.tap();
     if(installed && !deferredPrompt){     // installed earlier on this device
@@ -686,7 +712,25 @@
     } else {
       openInstallHelp();
     }
-  });
+  }
+  $('installBtn').addEventListener('click', startInstall);
+
+  // ---------- install pop-up ----------
+  const SNOOZE_DAYS = 3;
+  function hideSheet(){ $('installSheet').classList.remove('show'); }
+  function maybeShowSheet(){
+    if(installed || isStandalone()) return;
+    if(Date.now() < store.get('sheetSnooze', 0)) return;
+    if(!$('home').classList.contains('active')) return;   // only on the home screen, never mid-game
+    $('installSheet').classList.add('show');
+  }
+  $('sheetYes').addEventListener('click', () => { hideSheet(); startInstall(); });
+  const snooze = () => { hideSheet(); store.set('sheetSnooze', Date.now() + SNOOZE_DAYS*864e5); };
+  $('sheetNo').addEventListener('click', snooze);
+  $('sheetX').addEventListener('click', snooze);
+  window.addEventListener('appinstalled', hideSheet);
+  // Hide it as soon as a game starts
+  document.querySelectorAll('.mode, #stickersBtn').forEach(b => b.addEventListener('click', hideSheet));
   $('installClose').addEventListener('click', () => $('installModal').classList.remove('open'));
   $('installModal').addEventListener('click', e => { if(e.target.id === 'installModal') $('installModal').classList.remove('open'); });
 
@@ -712,7 +756,7 @@
     if(store.get('installed', false)) { installed = true; }
     renderInstall();
   }
-  checkInstalled();
+  checkInstalled().then(() => setTimeout(maybeShowSheet, 2000));
 
   // ---------- PWA ----------
   if('serviceWorker' in navigator){
