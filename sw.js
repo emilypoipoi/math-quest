@@ -1,5 +1,5 @@
-const CACHE = 'math-quest-v4';
-const FILES = ['./', './index.html', './manifest.json',
+const CACHE = 'math-quest-v5';
+const FILES = ['./', './index.html', './sprites.js', './manifest.json',
   './icons/icon-192.png?v=2', './icons/icon-512.png?v=2', './icons/apple-touch-icon.png?v=2', './icons/maskable-512.png?v=2'];
 
 self.addEventListener('install', e => {

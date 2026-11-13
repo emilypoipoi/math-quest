@@ -246,6 +246,17 @@
     display:none;z-index:60;font-size:clamp(15px,2.4vmin,20px);text-align:center
   }
   .toast button{background:var(--green);color:#fff;border-radius:999px;padding:.35em .9em;margin-left:.5em;font-weight:900}
+  .spr{display:inline-block;height:1em;vertical-align:-.14em;overflow:visible;flex:none}
+  .iconbtn .spr{height:1.1em}
+  .level .emoji .spr{height:1.3em;vertical-align:middle}
+  .mode .big .spr{height:1em;vertical-align:middle}
+  .mode .big{height:1em;display:flex;align-items:center;justify-content:center}
+  .mode .big .spr{filter:drop-shadow(0 3px 0 rgba(0,0,0,.18))}
+  .group .spr{height:1.1em}
+  .sticker .spr{height:1.75em}
+  .stars .spr{height:.9em}
+  .stars .off .spr{filter:grayscale(1);opacity:.35}
+  .modal-card .share .spr{height:.9em}
   @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -255,45 +266,45 @@
   <!-- HOME -->
   <section class="screen active" id="home">
     <div class="topbar">
-      <div class="pill" aria-label="Total stars">⭐ <span id="totalStars">0</span></div>
-      <button class="iconbtn" id="soundBtn" aria-label="Sound on or off">🔊</button>
+      <div class="pill" aria-label="Total stars"><i data-spr="star"></i> <span id="totalStars">0</span></div>
+      <button class="iconbtn" id="soundBtn" aria-label="Sound on or off"></button>
     </div>
-    <h1 class="title"><span>🦉</span> Math Quest</h1>
+    <h1 class="title"><span data-spr="owl"></span> Math Quest</h1>
     <p class="subtitle">Pick a level, then pick a game!</p>
 
     <div class="section-label">Level</div>
     <div class="levels" id="levels">
-      <button class="level" data-level="1"><span class="emoji">🐣</span>Easy<small>up to 10</small></button>
-      <button class="level" data-level="2"><span class="emoji">🐥</span>Medium<small>up to 20</small></button>
-      <button class="level" data-level="3"><span class="emoji">🦅</span>Hard<small>up to 100</small></button>
+      <button class="level" data-level="1"><span class="emoji" data-spr="egg"></span>Easy<small>up to 10</small></button>
+      <button class="level" data-level="2"><span class="emoji" data-spr="chick"></span>Medium<small>up to 20</small></button>
+      <button class="level" data-level="3"><span class="emoji" data-spr="owl"></span>Hard<small>up to 100</small></button>
     </div>
 
     <div class="section-label">Games</div>
     <div class="modes">
-      <button class="mode m-add" data-mode="add"><span class="big">➕</span>Adding</button>
-      <button class="mode m-sub" data-mode="sub"><span class="big">➖</span>Taking Away</button>
-      <button class="mode m-mix" data-mode="mix"><span class="big">🔀</span>Mix It Up</button>
-      <button class="mode m-miss" data-mode="miss"><span class="big">❓</span>Missing Number</button>
-      <button class="mode m-cmp" data-mode="cmp"><span class="big">🐊</span>Bigger or Smaller</button>
-      <button class="mode m-mul" data-mode="mul"><span class="big">✖️</span>Times Tables</button>
+      <button class="mode m-add" data-mode="add"><span class="big" data-spr="plus"></span>Adding</button>
+      <button class="mode m-sub" data-mode="sub"><span class="big" data-spr="minus"></span>Taking Away</button>
+      <button class="mode m-mix" data-mode="mix"><span class="big" data-spr="mix"></span>Mix It Up</button>
+      <button class="mode m-miss" data-mode="miss"><span class="big" data-spr="question"></span>Missing Number</button>
+      <button class="mode m-cmp" data-mode="cmp"><span class="big" data-spr="croc"></span>Bigger or Smaller</button>
+      <button class="mode m-mul" data-mode="mul"><span class="big" data-spr="times"></span>Times Tables</button>
     </div>
 
     <div class="home-footer">
-      <button class="wide-btn" id="stickersBtn">📒 My Stickers</button>
-      <button class="wide-btn" id="installBtn">📲 Add to Home</button>
+      <button class="wide-btn" id="stickersBtn"><i data-spr="book"></i> My Stickers</button>
+      <button class="wide-btn" id="installBtn"><i data-spr="phone"></i> Add to Home</button>
     </div>
   </section>
 
   <!-- PLAY -->
   <section class="screen" id="play">
     <div class="topbar">
-      <button class="iconbtn" id="quitBtn" aria-label="Go home">🏠</button>
+      <button class="iconbtn" id="quitBtn" aria-label="Go home" data-spr="home"></button>
       <div class="progress" id="progress"></div>
-      <div class="pill">⭐ <span id="roundStars">0</span></div>
+      <div class="pill"><i data-spr="star"></i> <span id="roundStars">0</span></div>
     </div>
     <div class="play-body">
       <div class="qcard">
-        <button class="iconbtn speak" id="speakBtn" aria-label="Read it to me">🗣️</button>
+        <button class="iconbtn speak" id="speakBtn" aria-label="Read it to me" data-spr="speak"></button>
         <div class="prompt" id="prompt"></div>
         <div class="question" id="question"></div>
         <div class="visual" id="visual"></div>
@@ -312,7 +323,7 @@
       <div id="resSticker"></div>
       <div class="btn-row">
         <button class="btn go" id="againBtn">▶ Play again</button>
-        <button class="btn home" id="homeBtn">🏠 Home</button>
+        <button class="btn home" id="homeBtn"><i data-spr="home"></i> Home</button>
       </div>
     </div>
   </section>
@@ -320,10 +331,10 @@
   <!-- STICKERS -->
   <section class="screen" id="stickers">
     <div class="topbar">
-      <button class="iconbtn" id="stickBack" aria-label="Go home">🏠</button>
-      <div class="pill">⭐ <span id="stickStars">0</span></div>
+      <button class="iconbtn" id="stickBack" aria-label="Go home" data-spr="home"></button>
+      <div class="pill"><i data-spr="star"></i> <span id="stickStars">0</span></div>
     </div>
-    <h2 class="sticker-head">📒 My Stickers</h2>
+    <h2 class="sticker-head"><i data-spr="book"></i> My Stickers</h2>
     <p class="sticker-info" id="stickInfo"></p>
     <div class="sticker-grid" id="stickerGrid"></div>
   </section>
@@ -336,10 +347,10 @@
   <button class="x" id="sheetX" aria-label="Close">✕</button>
   <img src="icons/icon-192.png?v=2" alt="">
   <div class="txt">
-    <b id="sheetTitle">Play it like an app! 🦉</b>
+    <b id="sheetTitle">Play it like an app! <i data-spr="owl"></i></b>
     <p>Add it to your home screen for full screen play. It works without internet too!</p>
     <div class="row">
-      <button class="yes" id="sheetYes">📲 Add to Home</button>
+      <button class="yes" id="sheetYes"><i data-spr="phone"></i> Add to Home</button>
       <button class="no" id="sheetNo">Not now</button>
     </div>
   </div>
@@ -347,22 +358,23 @@
 
 <div class="modal" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
   <div class="modal-card">
-    <h3 id="installTitle">📲 Add to Home Screen</h3>
+    <h3 id="installTitle"></h3>
     <ol id="installSteps"></ol>
     <p class="hint" id="installHint"></p>
     <button class="btn go" id="installClose">Got it!</button>
   </div>
 </div>
 
+<script src="sprites.js"></script>
 <script>
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
   const ROUND = 10;
   const STARS_PER_STICKER = 15;
-  const STICKERS = ['🐶','🐱','🐼','🦊','🐸','🐵','🦁','🐯','🐨','🐷','🐰','🐻','🦄','🐙','🐢','🦋','🐬','🦖','🐧','🦉','🐳','🦒','🐞','🐲'];
-  const OBJECTS = ['🍎','⭐','🐟','🍓','🌸','⚽','🧁','🐥','🍪','🎈'];
-  const PRAISE = ['Great job!','Awesome!','You got it!','Super!','Wow!','Yes!','Brilliant!','High five! ✋','Amazing!','Math star!'];
+  const STICKERS = ['chick','cat','panda','fox','frog','monkey','lion','tiger','koala','pig','bunny','bear','goldfish','octopus','turtle','butterfly','fish','dino','penguin','owl','whale','mouse','ladybug','wolf'];
+  const OBJECTS = ['apple','star','fish','strawberry','flower','balloon','cookie','chick'];
+  const PRAISE = ['Great job!','Awesome!','You got it!','Super!','Wow!','Yes!','Brilliant!','High five!','Amazing!','Math star!'];
   const TRY = ['Try again!','So close!','Have another go!','Almost!'];
 
   // ---------- storage (safe) ----------
@@ -463,7 +475,7 @@
     const ans = bigger ? Math.max(a,b) : Math.min(a,b);
     return { text:[], answer:ans, opts:[a,b], two:true,
              speak: bigger ? `Which number is bigger, ${a} or ${b}?` : `Which number is smaller, ${a} or ${b}?`,
-             prompt: bigger ? '🐊 Which number is BIGGER?' : '🐭 Which number is SMALLER?',
+             prompt: bigger ? S('croc') + ' Which number is BIGGER?' : S('mouse') + ' Which number is SMALLER?',
              visual: L===1 ? {type:'cmp', a, b} : null };
   }
   function makeMul(L){
@@ -494,7 +506,7 @@
   function renderHome(){
     $('totalStars').textContent = state.stars;
     document.querySelectorAll('.level').forEach(b => b.classList.toggle('selected', +b.dataset.level === state.level));
-    $('soundBtn').textContent = state.sound ? '🔊' : '🔇';
+    $('soundBtn').innerHTML = S(state.sound ? 'soundOn' : 'soundOff');
   }
   function renderProgress(){
     const p = $('progress'); p.innerHTML = '';
@@ -513,7 +525,7 @@
   function renderVisual(v){
     const el = $('visual');
     if(!v){ el.innerHTML=''; return; }
-    const e = pick(OBJECTS);
+    const e = S(pick(OBJECTS));
     if(v.type==='add') el.innerHTML = objs(v.a,e) + `<span class="op">+</span>` + objs(v.b,e);
     else if(v.type==='sub') el.innerHTML = objs(v.a,e,v.a-v.b);
     else if(v.type==='cmp') el.innerHTML = objs(v.a,e) + `<span class="op">or</span>` + objs(v.b,e);
@@ -525,7 +537,7 @@
   function nextQuestion(){
     const q = state.q = makeQ();
     state.firstTry = true;
-    $('prompt').textContent = q.prompt;
+    $('prompt').innerHTML = q.prompt;
     $('question').innerHTML = q.text.map(t => t==='?'||t==='□' ? `<span class="blank">?</span>` : `<span>${t}</span>`).join('');
     renderVisual(q.visual);
     const box = $('answers'); box.innerHTML = ''; box.className = 'answers' + (q.two ? ' two' : '');
@@ -549,7 +561,7 @@
       // fill in blank
       const blank = document.querySelector('#question .blank');
       if(blank){ blank.textContent = q.answer; blank.style.color = '#1fa463'; blank.style.borderColor = 'transparent'; }
-      $('feedback').textContent = (state.firstTry ? '⭐ ' : '👍 ') + pick(PRAISE);
+      $('feedback').innerHTML = S(state.firstTry ? 'star' : 'heart') + ' ' + pick(PRAISE);
       if(state.firstTry) burst(18);
       renderProgress();
       setTimeout(() => {
@@ -560,7 +572,7 @@
       sfx.wrong();
       state.firstTry = false;
       btn.classList.add('wrong');
-      $('feedback').textContent = pick(TRY) + ' 💪';
+      $('feedback').innerHTML = pick(TRY) + ' ' + S('heart');
     }
   }
   function startRound(mode){
@@ -574,16 +586,16 @@
     const after = Math.floor(state.stars / STARS_PER_STICKER);
     const s = state.roundStars;
     const n = s >= 9 ? 3 : s >= 6 ? 2 : s >= 1 ? 1 : 0;
-    $('resTitle').textContent = n===3 ? 'Superstar! 🎉' : n===2 ? 'Great job! 🎉' : n===1 ? 'Good work! 👍' : 'Keep practicing! 💪';
-    $('resStars').innerHTML = [0,1,2].map(i => `<span class="${i<n?'':'off'}">⭐</span>`).join('');
+    $('resTitle').innerHTML = n===3 ? 'Superstar! ' + S('trophy') : n===2 ? 'Great job! ' + S('star') : n===1 ? 'Good work! ' + S('heart') : 'Keep practicing! ' + S('heart');
+    $('resStars').innerHTML = [0,1,2].map(i => `<span class="${i<n?'':'off'}">${S('star')}</span>`).join('');
     $('resText').textContent = `You got ${s} out of ${ROUND} right on the first try!`;
     let stickerHtml = '';
     if(after > before && before < STICKERS.length){
       const st = STICKERS[Math.min(after, STICKERS.length) - 1];
-      stickerHtml = `<div class="newsticker"><span class="big">${st}</span>New sticker unlocked!</div>`;
+      stickerHtml = `<div class="newsticker"><span class="big">${S(st)}</span>New sticker unlocked!</div>`;
     } else if(after < STICKERS.length){
       const need = STARS_PER_STICKER - (state.stars % STARS_PER_STICKER);
-      stickerHtml = `<p>${need} more ⭐ for your next sticker!</p>`;
+      stickerHtml = `<p>${need} more ${S('star')} for your next sticker!</p>`;
     }
     $('resSticker').innerHTML = stickerHtml;
     show('results');
@@ -593,10 +605,10 @@
   function renderStickers(){
     const unlocked = Math.min(Math.floor(state.stars / STARS_PER_STICKER), STICKERS.length);
     $('stickStars').textContent = state.stars;
-    $('stickInfo').textContent = unlocked >= STICKERS.length ? 'You found them all! 🏆' :
-      `${unlocked} of ${STICKERS.length} found · ${STARS_PER_STICKER - state.stars % STARS_PER_STICKER} ⭐ to the next one`;
+    $('stickInfo').innerHTML = unlocked >= STICKERS.length ? 'You found them all! ' + S('trophy') :
+      `${unlocked} of ${STICKERS.length} found · ${STARS_PER_STICKER - state.stars % STARS_PER_STICKER} ${S('star')} to the next one`;
     $('stickerGrid').innerHTML = STICKERS.map((s,i) =>
-      i < unlocked ? `<div class="sticker">${s}</div>` : `<div class="sticker locked">?</div>`).join('');
+      i < unlocked ? `<div class="sticker">${S(s)}</div>` : `<div class="sticker locked">?</div>`).join('');
     show('stickers');
   }
 
@@ -630,6 +642,7 @@
   $('stickBack').addEventListener('click', () => { sfx.tap(); renderHome(); show('home'); });
   document.addEventListener('gesturestart', e => e.preventDefault()); // stop pinch-zoom on iOS
 
+  fillSprites();
   renderHome();
 
 
@@ -648,10 +661,10 @@
   function renderInstall(){
     const b = $('installBtn');
     if(installed){
-      b.textContent = '✅ Installed';
+      b.innerHTML = S('check') + ' Installed';
       b.classList.add('installed');
     } else {
-      b.textContent = '📲 Add to Home';
+      b.innerHTML = S('phone') + ' Add to Home';
       b.classList.remove('installed');
     }
   }
@@ -659,18 +672,18 @@
 
   function openInstallHelp(already){
     let steps, hint = '';
-    $('installTitle').textContent = already ? '✅ Already installed!' : '📲 Add to Home Screen';
+    $('installTitle').innerHTML = already ? S('check') + ' Already installed!' : S('phone') + ' Add to Home Screen';
     if(isIOS && isSafari){
       const ipad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       steps = [
-        `Tap the Share button <span class="share">⬆️</span> ${ipad ? 'at the top of the screen' : 'at the bottom of the screen'}.`,
+        `Tap the Share button <span class="share">${S('share')}</span> ${ipad ? 'at the top of the screen' : 'at the bottom of the screen'}.`,
         'Scroll down and tap <b>Add to Home Screen</b>.',
-        'Tap <b>Add</b>. Math Quest will be on your home screen! 🦉'
+        `Tap <b>Add</b>. Math Quest will be on your home screen! ${S('owl')}`
       ];
     } else if(isIOS){
       steps = [
         'Open this page in <b>Safari</b> (copy the link and paste it in Safari).',
-        'Tap the Share button <span class="share">⬆️</span>.',
+        `Tap the Share button <span class="share">${S('share')}</span>.`,
         'Tap <b>Add to Home Screen</b>, then <b>Add</b>.'
       ];
       hint = 'On iPhone and iPad, apps can only be added from Safari.';
@@ -678,7 +691,7 @@
       steps = [
         'Tap the menu <b>⋮</b> at the top right of Chrome.',
         'Tap <b>Install app</b> or <b>Add to Home screen</b>.',
-        'Tap <b>Install</b>. 🦉'
+        `Tap <b>Install</b>. ${S('owl')}`
       ];
     } else {
       steps = [
@@ -688,7 +701,7 @@
     }
     $('installSteps').innerHTML = steps.map(x => `<li>${x}</li>`).join('');
     if(already){
-      steps = ['Look for the 🦉 <b>Math Quest</b> icon on your home screen and tap it.'];
+      steps = [`Look for the ${S('owl')} <b>Math Quest</b> icon on your home screen and tap it.`];
       hint = 'Deleted it? Close this and the button will help you add it again.';
       installed = false; store.set('installed', false); renderInstall();
     }
