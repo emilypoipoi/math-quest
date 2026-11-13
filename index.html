@@ -104,7 +104,18 @@
   .m-miss{background:linear-gradient(160deg,#2fd6c3,#13a596)}
   .m-cmp{background:linear-gradient(160deg,#ff7a7a,#e54848)}
 
-  .home-footer{display:flex;justify-content:center;gap:var(--gap);margin-top:auto;padding-top:6px}
+  .home-footer{display:flex;justify-content:center;gap:var(--gap);margin-top:auto;padding-top:6px;flex-wrap:wrap}
+  .wide-btn.installed{background:#d9f7e8;color:#16804d;box-shadow:none;cursor:default}
+  .wide-btn.installed:active{transform:none}
+  .modal{position:fixed;inset:0;background:rgba(30,20,70,.55);display:none;align-items:center;justify-content:center;z-index:70;
+    padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 16px)}
+  .modal.open{display:flex;animation:pop .25s ease}
+  .modal-card{background:#fff;border-radius:calc(var(--radius)*1.2);padding:clamp(20px,4vmin,36px);max-width:480px;width:100%;
+    box-shadow:0 10px 0 rgba(0,0,0,.15);text-align:center}
+  .modal-card h3{margin:0 0 .4em;font-size:clamp(24px,4.5vmin,36px);font-weight:900}
+  .modal-card ol{text-align:left;margin:0 0 1em;padding-left:1.3em;font-size:clamp(17px,2.8vmin,24px);font-weight:700;line-height:1.5;color:#4a4270}
+  .modal-card .share{display:inline-grid;place-items:center;width:1.5em;height:1.5em;border-radius:.35em;background:#eef3ff;vertical-align:middle}
+  .modal-card .hint{font-size:clamp(14px,2.3vmin,18px);color:#8a83ad;font-weight:700;margin:0 0 1em}
   .wide-btn{
     background:#fff;border-radius:999px;padding:.6em 1.3em;font-weight:900;
     font-size:clamp(17px,2.8vmin,26px);box-shadow:0 5px 0 rgba(0,0,0,.15);
@@ -255,6 +266,7 @@
 
     <div class="home-footer">
       <button class="wide-btn" id="stickersBtn">📒 My Stickers</button>
+      <button class="wide-btn" id="installBtn">📲 Add to Home</button>
     </div>
   </section>
 
@@ -305,6 +317,15 @@
 
 <div class="confetti" id="confetti"></div>
 <div class="toast" id="toast"></div>
+
+<div class="modal" id="installModal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="modal-card">
+    <h3 id="installTitle">📲 Add to Home Screen</h3>
+    <ol id="installSteps"></ol>
+    <p class="hint" id="installHint"></p>
+    <button class="btn go" id="installClose">Got it!</button>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -583,6 +604,115 @@
   document.addEventListener('gesturestart', e => e.preventDefault()); // stop pinch-zoom on iOS
 
   renderHome();
+
+
+  // ---------- Add to Home Screen ----------
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(ua);
+  const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA|FBAN|FBAV|Instagram/i.test(ua);
+  let deferredPrompt = null;
+  let installed = false;
+
+  function isStandalone(){
+    return (window.matchMedia && (matchMedia('(display-mode: standalone)').matches ||
+            matchMedia('(display-mode: fullscreen)').matches)) || navigator.standalone === true;
+  }
+  function renderInstall(){
+    const b = $('installBtn');
+    if(installed){
+      b.textContent = '✅ Installed';
+      b.classList.add('installed');
+    } else {
+      b.textContent = '📲 Add to Home';
+      b.classList.remove('installed');
+    }
+  }
+  function markInstalled(){ installed = true; store.set('installed', true); renderInstall(); }
+
+  function openInstallHelp(already){
+    let steps, hint = '';
+    $('installTitle').textContent = already ? '✅ Already installed!' : '📲 Add to Home Screen';
+    if(isIOS && isSafari){
+      const ipad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      steps = [
+        `Tap the Share button <span class="share">⬆️</span> ${ipad ? 'at the top of the screen' : 'at the bottom of the screen'}.`,
+        'Scroll down and tap <b>Add to Home Screen</b>.',
+        'Tap <b>Add</b>. Math Quest will be on your home screen! 🦉'
+      ];
+    } else if(isIOS){
+      steps = [
+        'Open this page in <b>Safari</b> (copy the link and paste it in Safari).',
+        'Tap the Share button <span class="share">⬆️</span>.',
+        'Tap <b>Add to Home Screen</b>, then <b>Add</b>.'
+      ];
+      hint = 'On iPhone and iPad, apps can only be added from Safari.';
+    } else if(isAndroid){
+      steps = [
+        'Tap the menu <b>⋮</b> at the top right of Chrome.',
+        'Tap <b>Install app</b> or <b>Add to Home screen</b>.',
+        'Tap <b>Install</b>. 🦉'
+      ];
+    } else {
+      steps = [
+        'Look for the install icon <b>⊕</b> in the address bar, or open the browser menu.',
+        'Choose <b>Install Math Quest</b>.'
+      ];
+    }
+    $('installSteps').innerHTML = steps.map(x => `<li>${x}</li>`).join('');
+    if(already){
+      steps = ['Look for the 🦉 <b>Math Quest</b> icon on your home screen and tap it.'];
+      hint = 'Deleted it? Close this and the button will help you add it again.';
+      installed = false; store.set('installed', false); renderInstall();
+    }
+    $('installHint').textContent = hint;
+    $('installHint').style.display = hint ? '' : 'none';
+    $('installModal').classList.add('open');
+  }
+
+  $('installBtn').addEventListener('click', async () => {
+    if(isStandalone()) return;            // already running as the installed app
+    sfx.tap();
+    if(installed && !deferredPrompt){     // installed earlier on this device
+      openInstallHelp(true); return;
+    }
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      try{
+        const choice = await deferredPrompt.userChoice;
+        if(choice && choice.outcome === 'accepted') markInstalled();
+      }catch(e){}
+      deferredPrompt = null;
+    } else {
+      openInstallHelp();
+    }
+  });
+  $('installClose').addEventListener('click', () => $('installModal').classList.remove('open'));
+  $('installModal').addEventListener('click', e => { if(e.target.id === 'installModal') $('installModal').classList.remove('open'); });
+
+  window.addEventListener('beforeinstallprompt', e => {
+    // Browser says the app is NOT installed yet and can be installed with one tap.
+    e.preventDefault();
+    deferredPrompt = e;
+    installed = false; store.set('installed', false);
+    renderInstall();
+  });
+  window.addEventListener('appinstalled', markInstalled);
+
+  async function checkInstalled(){
+    if(isStandalone()){ markInstalled(); return; }   // opened from the home screen icon
+    // Chrome/Edge on Android & desktop can tell us if this web app is installed.
+    if('getInstalledRelatedApps' in navigator){
+      try{
+        const apps = await navigator.getInstalledRelatedApps();
+        if(apps && apps.length){ markInstalled(); return; }
+      }catch(e){}
+    }
+    // Remembered from an earlier install on this device (cleared again if the browser offers to install).
+    if(store.get('installed', false)) { installed = true; }
+    renderInstall();
+  }
+  checkInstalled();
 
   // ---------- PWA ----------
   if('serviceWorker' in navigator){

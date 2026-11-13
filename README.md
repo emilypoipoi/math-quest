@@ -18,6 +18,8 @@ The 🗣️ button reads the question aloud.
 - **iPhone / iPad (Safari):** Share → *Add to Home Screen*
 - **Android (Chrome):** menu ⋮ → *Install app*
 
+Or tap **📲 Add to Home** on the main screen for step-by-step help; it shows **✅ Installed** once added.
+
 It works offline after the first visit. Progress is saved on the device.
 
 ## Tech
